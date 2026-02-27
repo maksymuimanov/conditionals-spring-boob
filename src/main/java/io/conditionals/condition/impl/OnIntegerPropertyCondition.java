@@ -23,6 +23,7 @@ public class OnIntegerPropertyCondition extends SpringBootCondition {
         Stream<@Nullable AnnotationAttributes> annotationAttributes = ConditionUtils.mergedStream(metadata, ConditionalOnIntegerProperty.class, ConditionalOnIntegerProperties.class);
         return ConditionUtils.evaluateConditions(message, annotationAttributes, attributes ->
                 ConditionUtils.evaluatePropertyConditions(message, attributes, Spec::new, context.getEnvironment(), (spec, property, candidate) -> {
+                    if (property == null) return false;
                     boolean result = switch (spec.matchType) {
                         case EQUALS -> property.equals(candidate);
                         case GREATER_THAN -> property > candidate;

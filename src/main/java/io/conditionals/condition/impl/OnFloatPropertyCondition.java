@@ -23,7 +23,7 @@ public class OnFloatPropertyCondition extends SpringBootCondition {
         Stream<@Nullable AnnotationAttributes> annotationAttributes = ConditionUtils.mergedStream(metadata, ConditionalOnFloatProperty.class, ConditionalOnFloatProperties.class);
         return ConditionUtils.evaluateConditions(message, annotationAttributes, attributes ->
                 ConditionUtils.evaluatePropertyConditions(message, attributes, Spec::new, context.getEnvironment(), (spec, property, candidate) -> {
-                    if (Float.isNaN(candidate) || Float.isNaN(property)) return false;
+                    if (property == null || Float.isNaN(candidate) || Float.isNaN(property)) return false;
                     boolean result = switch (spec.matchType) {
                         case EQUALS -> {
                             float precision = 0.00001F;

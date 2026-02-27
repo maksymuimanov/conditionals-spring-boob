@@ -24,6 +24,7 @@ public class OnStringPropertyCondition extends SpringBootCondition {
         Stream<@Nullable AnnotationAttributes> annotationAttributes = ConditionUtils.mergedStream(metadata, ConditionalOnStringProperty.class, ConditionalOnStringProperties.class);
         return ConditionUtils.evaluateConditions(message, annotationAttributes, attributes ->
                 ConditionUtils.evaluatePropertyConditions(message, attributes, Spec::new, context.getEnvironment(), (spec, property, candidate) -> {
+                    if (property == null) return false;
                     if (spec.ignoreCase) {
                         property = property.toLowerCase(Locale.ROOT);
                         candidate = candidate.toLowerCase(Locale.ROOT);

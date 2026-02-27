@@ -99,9 +99,8 @@ public final class ConditionUtils {
         Map<String, Object> attributes = metadata.getAnnotationAttributes(annotationClass.getName());
         if (attributes == null)
             return Stream.of();
-        Annotation[] annotations = (Annotation[]) attributes.get(VALUE);
-        return Arrays.stream(annotations)
-                .map(annotation -> attributes(metadata, annotation.getClass()));
+        AnnotationAttributes[] annotationAttributes = (AnnotationAttributes[]) attributes.get(VALUE);
+        return Arrays.stream(annotationAttributes);
     }
 
     @Nullable

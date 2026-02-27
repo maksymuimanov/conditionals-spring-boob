@@ -1,5 +1,6 @@
 package io.conditionals.condition.dto;
 
+import org.jspecify.annotations.Nullable;
 import org.springframework.core.annotation.AnnotationAttributes;
 import org.springframework.core.env.PropertyResolver;
 import org.springframework.util.Assert;
@@ -31,7 +32,7 @@ public class PropertySpec<V, S extends PropertySpec<V, S>> {
                 : this.getPrefix(annotationAttributes);
         this.names = this.getNames(annotationAttributes);
         this.havingValue = (V) annotationAttributes.get(HAVING_VALUE);
-        this.havingValueType = (Class<V>) annotationAttributes.getClass(HAVING_VALUE);
+        this.havingValueType = (Class<V>) this.havingValue.getClass();
         this.matchIfMissing = annotationAttributes.getBoolean(MATCH_IF_MISSING);
     }
 
@@ -74,7 +75,7 @@ public class PropertySpec<V, S extends PropertySpec<V, S>> {
     }
 
     @SuppressWarnings("unchecked")
-    protected boolean isMatch(V value, PropertySpecMatcher<V, S> matcher) {
+    protected boolean isMatch(@Nullable V value, PropertySpecMatcher<V, S> matcher) {
         return matcher.compare((S) this, value, this.havingValue);
     }
 

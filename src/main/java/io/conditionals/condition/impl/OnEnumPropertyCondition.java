@@ -25,6 +25,7 @@ public class OnEnumPropertyCondition extends SpringBootCondition {
         Stream<@Nullable AnnotationAttributes> annotationAttributes = ConditionUtils.mergedStream(metadata, ConditionalOnEnumProperty.class, ConditionalOnEnumProperties.class);
         return ConditionUtils.evaluateConditions(message, annotationAttributes, attributes ->
                 ConditionUtils.evaluatePropertyConditions(message, attributes, Spec::new, context.getEnvironment(), (spec, property, candidate) -> {
+                    if (property == null) return false;
                     Class<? extends Enum> enumClass = spec.enumType;
                     String propertyName = property.toUpperCase(Locale.ROOT);
                     String candidateName = candidate.toUpperCase(Locale.ROOT);
