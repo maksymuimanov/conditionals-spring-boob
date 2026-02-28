@@ -122,7 +122,7 @@ public class OnStringPropertyCondition extends SpringBootCondition {
         private final boolean ignoreCase;
         private final boolean trim;
 
-        protected Spec(Class<? extends Annotation> annotationType, AnnotationAttributes annotationAttributes) {
+        private Spec(Class<? extends Annotation> annotationType, AnnotationAttributes annotationAttributes) {
             super(annotationType, annotationAttributes);
             this.ignoreCase = annotationAttributes.getBoolean(IGNORE_CASE);
             this.trim = annotationAttributes.getBoolean(TRIM);
