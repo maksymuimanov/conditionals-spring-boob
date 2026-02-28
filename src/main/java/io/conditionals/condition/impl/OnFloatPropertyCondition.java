@@ -72,6 +72,8 @@ import java.util.stream.Stream;
  * @see io.conditionals.condition.ConditionalOnFloatProperties
  */
 public class OnFloatPropertyCondition extends SpringBootCondition {
+    private static final float PRECISION = 0.00001F;
+
     @Override
     public ConditionOutcome getMatchOutcome(ConditionContext context,
                                             AnnotatedTypeMetadata metadata) {
@@ -81,10 +83,7 @@ public class OnFloatPropertyCondition extends SpringBootCondition {
                 ConditionUtils.evaluatePropertyConditions(message, attributes, Spec::new, context.getEnvironment(), (spec, property, candidate) -> {
                     if (property == null || Float.isNaN(candidate) || Float.isNaN(property)) return false;
                     boolean result = switch (spec.matchType) {
-                        case EQUALS -> {
-                            float precision = 0.00001F;
-                            yield Math.abs(property - candidate) < precision;
-                        }
+                        case EQUALS -> Math.abs(property - candidate) < PRECISION;
                         case GREATER_THAN -> property > candidate;
                         case LESS_THAN -> property < candidate;
                         case GREATER_THAN_OR_EQUAL -> property >= candidate;
