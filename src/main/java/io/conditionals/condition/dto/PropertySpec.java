@@ -10,6 +10,7 @@ import org.springframework.util.StringUtils;
 
 import java.lang.annotation.Annotation;
 import java.util.List;
+import java.util.function.Function;
 
 /**
  * Encapsulates a property-based condition specification derived from a single annotation instance.
@@ -82,10 +83,17 @@ public class PropertySpec<V, S extends PropertySpec<V, S>> {
     @SuppressWarnings("unchecked")
     protected PropertySpec(Class<? extends Annotation> annotationType,
                            AnnotationAttributes annotationAttributes) {
+        this(annotationType, annotationAttributes, attribute -> (V) attribute);
+    }
+
+    @SuppressWarnings("unchecked")
+    protected PropertySpec(Class<? extends Annotation> annotationType,
+                           AnnotationAttributes annotationAttributes,
+                           Function<Object, V> havingValueMapper) {
         this.annotationType = annotationType;
         this.prefix = this.resolvePrefix(annotationAttributes);
         this.names = this.resolveNames(annotationAttributes);
-        this.havingValue = (V) annotationAttributes.get(HAVING_VALUE);
+        this.havingValue = havingValueMapper.apply(annotationAttributes.get(HAVING_VALUE));
         this.havingValueType = (Class<V>) this.havingValue.getClass();
         this.matchIfMissing = annotationAttributes.getBoolean(MATCH_IF_MISSING);
     }
