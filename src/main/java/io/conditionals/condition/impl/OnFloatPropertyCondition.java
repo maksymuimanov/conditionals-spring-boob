@@ -2,7 +2,7 @@ package io.conditionals.condition.impl;
 
 import io.conditionals.condition.ConditionalOnFloatProperties;
 import io.conditionals.condition.ConditionalOnFloatProperty;
-import io.conditionals.condition.dto.PropertySpec;
+import io.conditionals.condition.dto.MatchingPropertySpec;
 import io.conditionals.condition.utils.ConditionUtils;
 import org.jspecify.annotations.Nullable;
 import org.springframework.boot.autoconfigure.condition.ConditionMessage;
@@ -82,28 +82,21 @@ public class OnFloatPropertyCondition extends SpringBootCondition {
         return ConditionUtils.evaluateConditions(message, annotationAttributes, attributes ->
                 ConditionUtils.evaluatePropertyConditions(message, attributes, Spec::new, context.getEnvironment(), (spec, property, candidate) -> {
                     if (property == null || Float.isNaN(candidate) || Float.isNaN(property)) return false;
-                    boolean result = switch (spec.matchType) {
+                    boolean result = switch (spec.getMatchType()) {
                         case EQUALS -> Math.abs(property - candidate) < PRECISION;
                         case GREATER_THAN -> property > candidate;
                         case LESS_THAN -> property < candidate;
                         case GREATER_THAN_OR_EQUAL -> property >= candidate;
                         case LESS_THAN_OR_EQUAL -> property <= candidate;
                     };
-                    return result ^ spec.not;
+                    return result ^ spec.isNot();
                 })
         );
     }
 
-    private static class Spec extends PropertySpec<Float, Spec> {
-        private static final String NOT = "not";
-        private static final String MATCH_TYPE = "matchType";
-        private final boolean not;
-        private final ConditionalOnFloatProperty.MatchType matchType;
-
-        protected Spec(Class<? extends Annotation> annotationType, AnnotationAttributes annotationAttributes) {
+    private static class Spec extends MatchingPropertySpec<Float, Spec, ConditionalOnFloatProperty.MatchType> {
+        private Spec(Class<? extends Annotation> annotationType, AnnotationAttributes annotationAttributes) {
             super(annotationType, annotationAttributes);
-            this.not = annotationAttributes.getBoolean(NOT);
-            this.matchType = annotationAttributes.getEnum(MATCH_TYPE);
         }
     }
 }

@@ -102,7 +102,7 @@ public class OnEnumPropertyCondition extends SpringBootCondition {
         private static final String ENUM_TYPE = "enumType";
         private final Class<? extends Enum> enumType;
 
-        protected Spec(Class<? extends Annotation> annotationType, AnnotationAttributes annotationAttributes) {
+        private Spec(Class<? extends Annotation> annotationType, AnnotationAttributes annotationAttributes) {
             super(annotationType, annotationAttributes);
             this.enumType = annotationAttributes.getClass(ENUM_TYPE);
         }

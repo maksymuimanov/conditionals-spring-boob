@@ -2,7 +2,7 @@ package io.conditionals.condition.impl;
 
 import io.conditionals.condition.ConditionalOnDurationProperties;
 import io.conditionals.condition.ConditionalOnDurationProperty;
-import io.conditionals.condition.dto.PropertySpec;
+import io.conditionals.condition.dto.MatchingPropertySpec;
 import io.conditionals.condition.utils.ConditionUtils;
 import org.jspecify.annotations.Nullable;
 import org.springframework.boot.autoconfigure.condition.ConditionMessage;
@@ -26,28 +26,21 @@ public class OnDurationPropertyCondition extends SpringBootCondition {
         return ConditionUtils.evaluateConditions(message, annotationAttributes, attributes ->
                 ConditionUtils.evaluatePropertyConditions(message, attributes, Spec::new, context.getEnvironment(), (spec, property, candidate) -> {
                     if (property == null) return false;
-                    boolean result = switch (spec.matchType) {
+                    boolean result = switch (spec.getMatchType()) {
                         case EQUALS -> property.equals(candidate);
                         case GREATER_THAN -> property.compareTo(candidate) > 0;
                         case LESS_THAN -> property.compareTo(candidate) < 0;
                         case GREATER_THAN_OR_EQUAL -> property.compareTo(candidate) >= 0;
                         case LESS_THAN_OR_EQUAL -> property.compareTo(candidate) <= 0;
                     };
-                    return result ^ spec.not;
+                    return result ^ spec.isNot();
                 })
         );
     }
 
-    private static class Spec extends PropertySpec<Duration, Spec> {
-        private static final String NOT = "not";
-        private static final String MATCH_TYPE = "matchType";
-        private final boolean not;
-        private final ConditionalOnDurationProperty.MatchType matchType;
-
-        protected Spec(Class<? extends Annotation> annotationType, AnnotationAttributes annotationAttributes) {
+    private static class Spec extends MatchingPropertySpec<Duration, Spec, ConditionalOnDurationProperty.MatchType> {
+        private Spec(Class<? extends Annotation> annotationType, AnnotationAttributes annotationAttributes) {
             super(annotationType, annotationAttributes, attribute -> DurationStyle.detectAndParse(String.valueOf(attribute)));
-            this.not = annotationAttributes.getBoolean(NOT);
-            this.matchType = annotationAttributes.getEnum(MATCH_TYPE);
         }
     }
 }

@@ -2,7 +2,7 @@ package io.conditionals.condition.impl;
 
 import io.conditionals.condition.ConditionalOnStringProperties;
 import io.conditionals.condition.ConditionalOnStringProperty;
-import io.conditionals.condition.dto.PropertySpec;
+import io.conditionals.condition.dto.MatchingPropertySpec;
 import io.conditionals.condition.utils.ConditionUtils;
 import org.jspecify.annotations.Nullable;
 import org.springframework.boot.autoconfigure.condition.ConditionMessage;
@@ -104,34 +104,28 @@ public class OnStringPropertyCondition extends SpringBootCondition {
                         property = property.trim();
                         candidate = candidate.trim();
                     }
-                    boolean result = switch (spec.matchType) {
+                    boolean result = switch (spec.getMatchType()) {
                         case EQUALS -> property.equals(candidate);
                         case CONTAINS -> property.contains(candidate);
                         case STARTS_WITH -> property.startsWith(candidate);
                         case ENDS_WITH -> property.endsWith(candidate);
                         case MATCHES -> property.matches(candidate);
                     };
-                    return result ^ spec.not;
+                    return result ^ spec.isNot();
                 })
         );
     }
 
-    private static class Spec extends PropertySpec<String, Spec> {
+    private static class Spec extends MatchingPropertySpec<String, Spec, ConditionalOnStringProperty.MatchType> {
         private static final String IGNORE_CASE = "ignoreCase";
         private static final String TRIM = "trim";
-        private static final String NOT = "not";
-        private static final String MATCH_TYPE = "matchType";
         private final boolean ignoreCase;
         private final boolean trim;
-        private final boolean not;
-        private final ConditionalOnStringProperty.MatchType matchType;
 
         protected Spec(Class<? extends Annotation> annotationType, AnnotationAttributes annotationAttributes) {
             super(annotationType, annotationAttributes);
             this.ignoreCase = annotationAttributes.getBoolean(IGNORE_CASE);
             this.trim = annotationAttributes.getBoolean(TRIM);
-            this.not = annotationAttributes.getBoolean(NOT);
-            this.matchType = annotationAttributes.getEnum(MATCH_TYPE);
         }
     }
 }

@@ -67,7 +67,7 @@ import java.util.function.Function;
  * @param <V> resolved property value type
  * @param <S> concrete {@link PropertySpec} subtype
  */
-public class PropertySpec<V, S extends PropertySpec<V, S>> {
+public abstract class PropertySpec<V, S extends PropertySpec<V, S>> {
     protected static final String VALUE = "value";
     protected static final String PREFIX = "prefix";
     protected static final String NAME = "name";
@@ -241,27 +241,27 @@ public class PropertySpec<V, S extends PropertySpec<V, S>> {
         return matcher.compare((S) this, value, this.getHavingValue());
     }
 
-    protected Class<? extends Annotation> getAnnotationType() {
+    public Class<? extends Annotation> getAnnotationType() {
         return annotationType;
     }
 
-    protected String getPrefix() {
+    public String getPrefix() {
         return prefix;
     }
 
-    protected String[] getNames() {
+    public String[] getNames() {
         return names;
     }
 
-    protected V getHavingValue() {
+    public V getHavingValue() {
         return havingValue;
     }
 
-    protected Class<V> getHavingValueType() {
+    public Class<V> getHavingValueType() {
         return havingValueType;
     }
 
-    protected boolean isMatchIfMissing() {
+    public boolean isMatchIfMissing() {
         return matchIfMissing;
     }
 
