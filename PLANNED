@@ -1,0 +1,14 @@
+ConditionalOnCharacterProperty           | 1
+ConditionalOnMapProperty                 | 9
+ConditionalOnEnvironmentVariable         | 7
+ConditionalOnSystemProperty              | 7
+ConditionalOnBeanCount                   | 4
+ConditionalOnPropertyPresent             | 2
+ConditionalOnPropertyPattern             | 9
+ConditionalOnActiveProfileMatch          | 6
+ConditionalOnPortAvailable               | 5
+ConditionalOnClassPackage                | 6
+ConditionalOnResourceContent             | 8
+ConditionalOnRandomThreshold             | 5
+ConditionalOnThreadingModel              | 6
+ConditionalOnOsArchitecture              | 6
