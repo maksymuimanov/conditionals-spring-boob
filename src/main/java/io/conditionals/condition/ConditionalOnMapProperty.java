@@ -1,7 +1,7 @@
 package io.conditionals.condition;
 
-import io.conditionals.condition.dto.CollectionMatchType;
 import io.conditionals.condition.impl.OnMapPropertyCondition;
+import io.conditionals.condition.spec.MapMatchType;
 import org.springframework.context.annotation.Conditional;
 
 import java.lang.annotation.*;
@@ -18,15 +18,11 @@ public @interface ConditionalOnMapProperty {
 
     String[] name() default {};
 
-    String[] havingKey() default {};
-
     String[] havingValue() default {};
-
-    int size() default -1;
 
     boolean not() default false;
 
-    CollectionMatchType matchType() default CollectionMatchType.EQUALS;
+    MapMatchType matchType() default MapMatchType.EQUALS;
 
     boolean matchIfMissing() default false;
 }

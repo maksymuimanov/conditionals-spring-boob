@@ -1,7 +1,7 @@
 package io.conditionals.condition.impl;
 
-import io.conditionals.condition.dto.PropertySpec;
-import io.conditionals.condition.dto.PropertySpecMatcher;
+import io.conditionals.condition.spec.PropertySpec;
+import io.conditionals.condition.spec.PropertySpecMatcher;
 import io.conditionals.condition.utils.ConditionUtils;
 import org.jspecify.annotations.Nullable;
 import org.springframework.boot.autoconfigure.condition.ConditionMessage;

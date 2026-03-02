@@ -1,7 +1,7 @@
 package io.conditionals.condition;
 
-import io.conditionals.condition.dto.ComparableMatchType;
 import io.conditionals.condition.impl.OnDurationPropertyCondition;
+import io.conditionals.condition.spec.ComparableMatchType;
 import org.springframework.context.annotation.Conditional;
 
 import java.lang.annotation.*;

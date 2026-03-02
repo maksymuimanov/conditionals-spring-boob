@@ -1,6 +1,6 @@
 package io.conditionals.condition;
 
-import io.conditionals.condition.dto.StringMatchType;
+import io.conditionals.condition.spec.StringMatchType;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.context.annotation.Bean;

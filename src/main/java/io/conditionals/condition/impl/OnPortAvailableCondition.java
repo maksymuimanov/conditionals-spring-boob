@@ -10,6 +10,7 @@ import org.springframework.core.annotation.AnnotationAttributes;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.net.ServerSocket;
+import java.util.Arrays;
 
 public class OnPortAvailableCondition extends MatchingSpringBootCondition {
     private static final String VALUE = "value";
@@ -21,19 +22,22 @@ public class OnPortAvailableCondition extends MatchingSpringBootCondition {
 
     @Override
     protected ConditionOutcome determineOutcome(ConditionMessage.Builder message, ConditionContext context, AnnotationAttributes annotationAttributes) {
-        int port = annotationAttributes.getNumber(VALUE).intValue();
-        boolean portAvailable = isPortAvailable(port);
+        int[] ports = (int[]) annotationAttributes.get(VALUE);
+        boolean portAvailable = isPortAvailable(ports);
         return portAvailable
                 ? ConditionOutcome.match()
-                : ConditionUtils.noMatchBecause(message, "Port ", String.valueOf(port), " is not available");
+                : ConditionUtils.noMatchBecause(message, "Port ", Arrays.toString(ports), " is not available");
     }
 
-    private boolean isPortAvailable(int port) {
-        try (ServerSocket socket = new ServerSocket(port)) {
-            socket.setReuseAddress(true);
-            return true;
-        } catch (IOException e) {
-            return false;
+    private boolean isPortAvailable(int[] ports) {
+        for (int port : ports) {
+            try (ServerSocket socket = new ServerSocket(port)) {
+                socket.setReuseAddress(true);
+            } catch (IOException e) {
+                return false;
+            }
         }
+
+        return true;
     }
 }

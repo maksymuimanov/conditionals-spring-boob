@@ -1,7 +1,7 @@
 package io.conditionals.condition;
 
-import io.conditionals.condition.dto.ComparableMatchType;
 import io.conditionals.condition.impl.OnIntegerPropertyCondition;
+import io.conditionals.condition.spec.ComparableMatchType;
 import org.springframework.context.annotation.Conditional;
 
 import java.lang.annotation.*;
@@ -63,88 +63,17 @@ import java.lang.annotation.*;
 @Conditional(OnIntegerPropertyCondition.class)
 @Repeatable(ConditionalOnIntegerProperties.class)
 public @interface ConditionalOnIntegerProperty {
-    /**
-     * Alias for {@link #name()}.
-     *
-     * <p><b>Semantics</b></p>
-     * <p>Provides property names evaluated in encounter order.</p>
-     *
-     * <p><b>Thread Safety</b></p>
-     * <p>Thread-safe.</p>
-     *
-     * @return property names
-     */
     String[] value() default {};
 
-    /**
-     * Prefix applied when constructing each property key.
-     *
-     * <p><b>Semantics</b></p>
-     * <p>Normalized as trim; append {@code '.'} when non-empty.</p>
-     *
-     * <p><b>Thread Safety</b></p>
-     * <p>Thread-safe.</p>
-     *
-     * @return property key prefix
-     */
     String prefix() default "";
 
-    /**
-     * Property names to evaluate.
-     *
-     * <p><b>Semantics</b></p>
-     * <p>Mutually exclusive with {@link #value()}.</p>
-     *
-     * <p><b>Thread Safety</b></p>
-     * <p>Thread-safe.</p>
-     *
-     * @return property names
-     */
     String[] name() default {};
 
-    /**
-     * Candidate integer value used for comparison.
-     *
-     * <p><b>Semantics</b></p>
-     * <p>Compared to the resolved property value according to {@link #matchType()}.</p>
-     *
-     * <p><b>Thread Safety</b></p>
-     * <p>Thread-safe.</p>
-     *
-     * @return required value
-     */
     int havingValue() default 0;
 
-    /**
-     * Whether to invert the match result.
-     *
-     * <p><b>Semantics</b></p>
-     * <p>The final predicate is {@code (comparisonResult XOR not)}.</p>
-     *
-     * <p><b>Thread Safety</b></p>
-     * <p>Thread-safe.</p>
-     *
-     * @return {@code true} to negate the comparison result
-     */
     boolean not() default false;
 
-    /**
-     * Integer comparison mode.
-     *
-     * @return comparison mode
-     */
     ComparableMatchType matchType() default ComparableMatchType.EQUALS;
 
-    /**
-     * Whether to consider missing properties as matching.
-     *
-     * <p><b>Semantics</b></p>
-     * <p>If {@code true}, a missing property key does not contribute to a no-match outcome.</p>
-     *
-     * <p><b>Thread Safety</b></p>
-     * <p>Thread-safe.</p>
-     *
-     * @return {@code true} to match when a property is missing
-     */
     boolean matchIfMissing() default false;
 }

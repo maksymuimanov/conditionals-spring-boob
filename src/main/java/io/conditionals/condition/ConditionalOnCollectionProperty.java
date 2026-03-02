@@ -1,7 +1,7 @@
 package io.conditionals.condition;
 
-import io.conditionals.condition.dto.CollectionMatchType;
 import io.conditionals.condition.impl.OnCollectionPropertyCondition;
+import io.conditionals.condition.spec.CollectionMatchType;
 import org.springframework.context.annotation.Conditional;
 
 import java.lang.annotation.*;

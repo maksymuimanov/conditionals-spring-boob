@@ -1,4 +1,4 @@
-package io.conditionals.condition.dto;
+package io.conditionals.condition.spec;
 
 import org.springframework.core.annotation.AnnotationAttributes;
 

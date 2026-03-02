@@ -66,45 +66,15 @@ import java.lang.annotation.*;
 @Conditional(OnEnumPropertyCondition.class)
 @Repeatable(ConditionalOnEnumProperties.class)
 public @interface ConditionalOnEnumProperty {
-    /**
-     * Alias for {@link #name()}.
-     *
-     * @return property names
-     */
     String[] value() default {};
 
-    /**
-     * Prefix applied when constructing each property key.
-     *
-     * @return property key prefix
-     */
     String prefix() default "";
 
-    /**
-     * Property names to evaluate.
-     *
-     * @return property names
-     */
     String[] name() default {};
 
-    /**
-     * Candidate value to compare against the resolved property value.
-     *
-     * @return required value as string
-     */
     String havingValue() default "";
 
-    /**
-     * Target enum type used for conversion.
-     *
-     * @return enum type
-     */
     Class<? extends Enum<?>> enumType();
 
-    /**
-     * Whether to consider missing properties as matching.
-     *
-     * @return {@code true} to match when a property is missing
-     */
     boolean matchIfMissing() default false;
 }

@@ -2,9 +2,9 @@ package io.conditionals.condition.impl;
 
 import io.conditionals.condition.ConditionalOnStringProperties;
 import io.conditionals.condition.ConditionalOnStringProperty;
-import io.conditionals.condition.dto.MatchingPropertySpec;
-import io.conditionals.condition.dto.PropertySpecMatcher;
-import io.conditionals.condition.dto.StringMatchType;
+import io.conditionals.condition.spec.MatchingPropertySpec;
+import io.conditionals.condition.spec.PropertySpecMatcher;
+import io.conditionals.condition.spec.StringMatchType;
 import io.conditionals.condition.utils.ConditionUtils;
 import org.jspecify.annotations.Nullable;
 import org.springframework.core.annotation.AnnotationAttributes;
@@ -30,7 +30,12 @@ public class OnStringPropertyCondition extends PropertySpringBootCondition<Strin
 
     @Override
     protected PropertySpecMatcher<String, Spec> createPropertySpecMatcher() {
-        return (spec, property, candidate) -> {
+        return new Matcher();
+    }
+
+    public class Matcher implements PropertySpecMatcher<String, Spec> {
+        @Override
+        public boolean compare(Spec spec, @Nullable String property, String candidate) {
             if (property == null) return false;
             if (spec.ignoreCase) {
                 property = property.toLowerCase(Locale.ROOT);
@@ -48,10 +53,10 @@ public class OnStringPropertyCondition extends PropertySpringBootCondition<Strin
                 case MATCHES -> property.matches(candidate);
             };
             return ConditionUtils.revert(result, spec.isNot());
-        };
+        }
     }
 
-    public static class Spec extends MatchingPropertySpec<String, Spec, StringMatchType> {
+    public class Spec extends MatchingPropertySpec<String, Spec, StringMatchType> {
         private static final String IGNORE_CASE = "ignoreCase";
         private static final String TRIM = "trim";
         private final boolean ignoreCase;
