@@ -68,6 +68,7 @@ import java.util.Locale;
  */
 public class OnOsCondition extends MatchingSpringBootCondition {
     public static final String OS_NAME_PROPERTY_KEY = "os.name";
+    private static final String VALUE = "value";
 
     @Override
     protected Class<? extends Annotation> getAnnotationClass() {
@@ -76,15 +77,23 @@ public class OnOsCondition extends MatchingSpringBootCondition {
 
     @Override
     protected ConditionOutcome determineOutcome(ConditionMessage.Builder message, ConditionContext context, AnnotationAttributes annotationAttributes) {
-        String osName = context.getEnvironment()
-                .getProperty(OS_NAME_PROPERTY_KEY, System.getProperty(OS_NAME_PROPERTY_KEY, ""))
-                .toLowerCase(Locale.ROOT);
-        String[] values = annotationAttributes.getStringArray("value");
-        boolean matched = Arrays.stream(values)
-                .map(value -> value.toLowerCase(Locale.ROOT))
-                .anyMatch(osName::contains);
+        String osName = this.getOsName(context);
+        String[] values = annotationAttributes.getStringArray(VALUE);
+        boolean matched = this.isOsIncluded(values, osName);
         return matched
                 ? ConditionOutcome.match(message.found("OS").items(osName))
                 : ConditionUtils.noMatchBecause(message, "OS '", osName, "' did not match any of ", Arrays.toString(values));
+    }
+
+    private String getOsName(ConditionContext context) {
+        return context.getEnvironment()
+                .getProperty(OS_NAME_PROPERTY_KEY, System.getProperty(OS_NAME_PROPERTY_KEY, ""))
+                .toLowerCase(Locale.ROOT);
+    }
+
+    private boolean isOsIncluded(String[] values, String osName) {
+        return Arrays.stream(values)
+                .map(value -> value.toLowerCase(Locale.ROOT))
+                .anyMatch(osName::contains);
     }
 }
