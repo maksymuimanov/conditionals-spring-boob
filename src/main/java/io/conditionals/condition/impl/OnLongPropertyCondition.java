@@ -2,18 +2,12 @@ package io.conditionals.condition.impl;
 
 import io.conditionals.condition.ConditionalOnLongProperties;
 import io.conditionals.condition.ConditionalOnLongProperty;
-import io.conditionals.condition.dto.MatchingPropertySpec;
 import io.conditionals.condition.utils.ConditionUtils;
-import org.jspecify.annotations.Nullable;
-import org.springframework.boot.autoconfigure.condition.ConditionMessage;
 import org.springframework.boot.autoconfigure.condition.ConditionOutcome;
-import org.springframework.boot.autoconfigure.condition.SpringBootCondition;
 import org.springframework.context.annotation.ConditionContext;
-import org.springframework.core.annotation.AnnotationAttributes;
 import org.springframework.core.type.AnnotatedTypeMetadata;
 
 import java.lang.annotation.Annotation;
-import java.util.stream.Stream;
 
 /**
  * Spring Boot {@link org.springframework.context.annotation.Condition} implementation backing
@@ -77,30 +71,39 @@ import java.util.stream.Stream;
  * @see ConditionalOnLongProperty
  * @see ConditionalOnLongProperties
  */
-public class OnLongPropertyCondition extends SpringBootCondition {
+public class OnLongPropertyCondition extends NumericPropertySpringBootCondition<Long> {
     @Override
-    public ConditionOutcome getMatchOutcome(ConditionContext context,
-                                            AnnotatedTypeMetadata metadata) {
-        ConditionMessage.Builder message = ConditionMessage.forCondition(ConditionalOnLongProperty.class);
-        Stream<@Nullable AnnotationAttributes> annotationAttributes = ConditionUtils.mergedStream(metadata, ConditionalOnLongProperty.class, ConditionalOnLongProperties.class);
-        return ConditionUtils.evaluateConditions(message, annotationAttributes, attributes ->
-                ConditionUtils.evaluatePropertyConditions(message, attributes, Spec::new, context.getEnvironment(), (spec, property, candidate) -> {
-                    if (property == null) return false;
-                    boolean result = switch (spec.getMatchType()) {
-                        case EQUALS -> property.equals(candidate);
-                        case GREATER_THAN -> property > candidate;
-                        case LESS_THAN -> property < candidate;
-                        case GREATER_THAN_OR_EQUAL -> property >= candidate;
-                        case LESS_THAN_OR_EQUAL -> property <= candidate;
-                    };
-                    return result ^ spec.isNot();
-                })
-        );
+    protected boolean checkEquals(Long property, Long candidate) {
+        return property.equals(candidate);
     }
 
-    private static class Spec extends MatchingPropertySpec<Long, Spec, ConditionalOnLongProperty.MatchType> {
-        private Spec(Class<? extends Annotation> annotationType, AnnotationAttributes annotationAttributes) {
-            super(annotationType, annotationAttributes);
-        }
+    @Override
+    protected boolean checkGreaterThan(Long property, Long candidate) {
+        return property > candidate;
+    }
+
+    @Override
+    protected boolean checkLessThan(Long property, Long candidate) {
+        return property < candidate;
+    }
+
+    @Override
+    protected boolean checkGreaterThanOrEqual(Long property, Long candidate) {
+        return property >= candidate;
+    }
+
+    @Override
+    protected boolean checkLessThanOrEqual(Long property, Long candidate) {
+        return property <= candidate;
+    }
+
+    @Override
+    protected Class<? extends Annotation> getAnnotationClass() {
+        return ConditionalOnLongProperty.class;
+    }
+
+    @Override
+    protected Class<? extends Annotation> getAnnotationContainerClass() {
+        return ConditionalOnLongProperties.class;
     }
 }

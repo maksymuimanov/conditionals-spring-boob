@@ -2,18 +2,10 @@ package io.conditionals.condition.impl;
 
 import io.conditionals.condition.ConditionalOnFloatProperties;
 import io.conditionals.condition.ConditionalOnFloatProperty;
-import io.conditionals.condition.dto.MatchingPropertySpec;
 import io.conditionals.condition.utils.ConditionUtils;
-import org.jspecify.annotations.Nullable;
-import org.springframework.boot.autoconfigure.condition.ConditionMessage;
-import org.springframework.boot.autoconfigure.condition.ConditionOutcome;
-import org.springframework.boot.autoconfigure.condition.SpringBootCondition;
-import org.springframework.context.annotation.ConditionContext;
-import org.springframework.core.annotation.AnnotationAttributes;
 import org.springframework.core.type.AnnotatedTypeMetadata;
 
 import java.lang.annotation.Annotation;
-import java.util.stream.Stream;
 
 /**
  * Spring Boot {@link org.springframework.context.annotation.Condition} implementation backing
@@ -71,32 +63,41 @@ import java.util.stream.Stream;
  * @see io.conditionals.condition.ConditionalOnFloatProperty
  * @see io.conditionals.condition.ConditionalOnFloatProperties
  */
-public class OnFloatPropertyCondition extends SpringBootCondition {
+public class OnFloatPropertyCondition extends NumericPropertySpringBootCondition<Float> {
     private static final float PRECISION = 0.00001F;
 
     @Override
-    public ConditionOutcome getMatchOutcome(ConditionContext context,
-                                            AnnotatedTypeMetadata metadata) {
-        ConditionMessage.Builder message = ConditionMessage.forCondition(ConditionalOnFloatProperty.class);
-        Stream<@Nullable AnnotationAttributes> annotationAttributes = ConditionUtils.mergedStream(metadata, ConditionalOnFloatProperty.class, ConditionalOnFloatProperties.class);
-        return ConditionUtils.evaluateConditions(message, annotationAttributes, attributes ->
-                ConditionUtils.evaluatePropertyConditions(message, attributes, Spec::new, context.getEnvironment(), (spec, property, candidate) -> {
-                    if (property == null || Float.isNaN(candidate) || Float.isNaN(property)) return false;
-                    boolean result = switch (spec.getMatchType()) {
-                        case EQUALS -> Math.abs(property - candidate) < PRECISION;
-                        case GREATER_THAN -> property > candidate;
-                        case LESS_THAN -> property < candidate;
-                        case GREATER_THAN_OR_EQUAL -> property >= candidate;
-                        case LESS_THAN_OR_EQUAL -> property <= candidate;
-                    };
-                    return result ^ spec.isNot();
-                })
-        );
+    protected boolean checkEquals(Float property, Float candidate) {
+        return Math.abs(property - candidate) < PRECISION;
     }
 
-    private static class Spec extends MatchingPropertySpec<Float, Spec, ConditionalOnFloatProperty.MatchType> {
-        private Spec(Class<? extends Annotation> annotationType, AnnotationAttributes annotationAttributes) {
-            super(annotationType, annotationAttributes);
-        }
+    @Override
+    protected boolean checkGreaterThan(Float property, Float candidate) {
+        return property > candidate;
+    }
+
+    @Override
+    protected boolean checkLessThan(Float property, Float candidate) {
+        return property < candidate;
+    }
+
+    @Override
+    protected boolean checkGreaterThanOrEqual(Float property, Float candidate) {
+        return property >= candidate;
+    }
+
+    @Override
+    protected boolean checkLessThanOrEqual(Float property, Float candidate) {
+        return property <= candidate;
+    }
+
+    @Override
+    protected Class<? extends Annotation> getAnnotationClass() {
+        return ConditionalOnFloatProperty.class;
+    }
+
+    @Override
+    protected Class<? extends Annotation> getAnnotationContainerClass() {
+        return ConditionalOnFloatProperties.class;
     }
 }

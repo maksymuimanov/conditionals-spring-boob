@@ -217,7 +217,6 @@ public abstract class PropertySpec<V, S extends PropertySpec<V, S>> {
                 nonMatching.add(name);
             }
         }
-
     }
 
     /**

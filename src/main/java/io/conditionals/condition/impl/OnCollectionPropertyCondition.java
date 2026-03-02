@@ -2,43 +2,67 @@ package io.conditionals.condition.impl;
 
 import io.conditionals.condition.ConditionalOnCollectionProperties;
 import io.conditionals.condition.ConditionalOnCollectionProperty;
+import io.conditionals.condition.dto.CollectionMatchType;
 import io.conditionals.condition.dto.MatchingPropertySpec;
+import io.conditionals.condition.dto.PropertySpecMatcher;
 import io.conditionals.condition.utils.ConditionUtils;
 import org.jspecify.annotations.Nullable;
-import org.springframework.boot.autoconfigure.condition.ConditionMessage;
-import org.springframework.boot.autoconfigure.condition.ConditionOutcome;
-import org.springframework.boot.autoconfigure.condition.SpringBootCondition;
-import org.springframework.context.annotation.ConditionContext;
 import org.springframework.core.annotation.AnnotationAttributes;
-import org.springframework.core.type.AnnotatedTypeMetadata;
 
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
-import java.util.stream.Stream;
 
-public class OnCollectionPropertyCondition extends SpringBootCondition {
+public class OnCollectionPropertyCondition extends PropertySpringBootCondition<String[], OnCollectionPropertyCondition.Spec> {
     @Override
-    public ConditionOutcome getMatchOutcome(ConditionContext context,
-                                            AnnotatedTypeMetadata metadata) {
-        ConditionMessage.Builder message = ConditionMessage.forCondition(ConditionalOnCollectionProperty.class);
-        Stream<@Nullable AnnotationAttributes> annotationAttributes = ConditionUtils.mergedStream(metadata, ConditionalOnCollectionProperty.class, ConditionalOnCollectionProperties.class);
-        return ConditionUtils.evaluateConditions(message, annotationAttributes, attributes ->
-                ConditionUtils.evaluatePropertyConditions(message, attributes, Spec::new, context.getEnvironment(), (spec, property, candidate) -> {
-                    if (property == null) return false;
-                    if (spec.size != -1 && property.length != spec.size) return spec.isNot();
-                    boolean result = switch (spec.getMatchType()) {
-                        case EQUALS -> Arrays.equals(property, candidate);
-                        case CONTAINS_ALL -> containsSubArray(property, candidate);
-                        case CONTAINS_SEQUENCE -> containsSequence(property, candidate);
-                        case STARTS_WITH -> startsWithSubArray(property, candidate);
-                        case ENDS_WITH -> endsWithSubArray(property, candidate);
-                    };
-                    return result ^ spec.isNot();
-                })
-        );
+    protected Class<? extends Annotation> getAnnotationClass() {
+        return ConditionalOnCollectionProperty.class;
     }
 
-    private static boolean containsSubArray(String[] property, String[] candidate) {
+    @Override
+    protected Class<? extends Annotation> getAnnotationContainerClass() {
+        return ConditionalOnCollectionProperties.class;
+    }
+
+    @Override
+    protected Spec createSpec(@Nullable Class<? extends Annotation> annotationType, AnnotationAttributes annotationAttributes) {
+        return new Spec(annotationType, annotationAttributes);
+    }
+
+    @Override
+    protected PropertySpecMatcher<String[], Spec> createPropertySpecMatcher() {
+        return (spec, property, candidate) -> {
+            if (property == null) return false;
+            if (spec.size != -1 && property.length != spec.size) return spec.isNot();
+            boolean result = switch (spec.getMatchType()) {
+                case EQUALS -> Arrays.equals(property, candidate);
+                case CONTAINS_ANY -> containsAny(property, candidate);
+                case CONTAINS_ALL -> containsAll(property, candidate);
+                case CONTAINS_SEQUENCE -> containsSequence(property, candidate);
+                case STARTS_WITH_ANY -> startsWithAny(property, candidate);
+                case STARTS_WITH_ALL -> startsWithAll(property, candidate);
+                case ENDS_WITH_ANY -> endsWithAny(property, candidate);
+                case ENDS_WITH_ALL -> endsWithAll(property, candidate);
+            };
+            return ConditionUtils.revert(result, spec.isNot());
+        };
+    }
+
+    private static boolean containsAny(String[] property, String[] candidate) {
+        int candidateLength = candidate.length;
+        if (candidateLength == 0) return true;
+
+        for (String candidateElement : candidate) {
+            for (String propertyElement : property) {
+                if (propertyElement.equals(candidateElement)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private static boolean containsAll(String[] property, String[] candidate) {
         int candidateLength = candidate.length;
         if (candidateLength == 0) return true;
         int propertyLength = property.length;
@@ -79,7 +103,20 @@ public class OnCollectionPropertyCondition extends SpringBootCondition {
         return false;
     }
 
-    private static boolean startsWithSubArray(String[] property, String[] candidate) {
+    private static boolean startsWithAny(String[] property, String[] candidate) {
+        int candidateLength = candidate.length;
+        if (candidateLength == 0) return true;
+
+        for (String candidateElement : candidate) {
+            if (property[0].equals(candidateElement)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static boolean startsWithAll(String[] property, String[] candidate) {
         int candidateLength = candidate.length;
         if (candidateLength == 0) return true;
         int propertyLength = property.length;
@@ -94,7 +131,21 @@ public class OnCollectionPropertyCondition extends SpringBootCondition {
         return true;
     }
 
-    private static boolean endsWithSubArray(String[] property, String[] candidate) {
+    private static boolean endsWithAny(String[] property, String[] candidate) {
+        int candidateLength = candidate.length;
+        if (candidateLength == 0) return true;
+        int propertyLength = property.length;
+
+        for (String candidateElement : candidate) {
+            if (!property[propertyLength - 1].equals(candidateElement)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static boolean endsWithAll(String[] property, String[] candidate) {
         int candidateLength = candidate.length;
         if (candidateLength == 0) return true;
         int propertyLength = property.length;
@@ -106,10 +157,10 @@ public class OnCollectionPropertyCondition extends SpringBootCondition {
             }
         }
 
-        return true;
+        return false;
     }
 
-    private static class Spec extends MatchingPropertySpec<String[], Spec, ConditionalOnCollectionProperty.MatchType> {
+    public static class Spec extends MatchingPropertySpec<String[], Spec, CollectionMatchType> {
         private static final String SIZE = "size";
         private final int size;
 

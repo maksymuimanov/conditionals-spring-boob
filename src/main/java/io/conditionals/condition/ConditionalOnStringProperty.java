@@ -1,5 +1,6 @@
 package io.conditionals.condition;
 
+import io.conditionals.condition.dto.StringMatchType;
 import io.conditionals.condition.impl.OnStringPropertyCondition;
 import org.springframework.context.annotation.Conditional;
 
@@ -181,21 +182,9 @@ public @interface ConditionalOnStringProperty {
     /**
      * String comparison mode.
      *
-     * <p><b>Semantics</b></p>
-     * <ul>
-     *     <li>{@link MatchType#EQUALS}: {@link String#equals(Object)}</li>
-     *     <li>{@link MatchType#CONTAINS}: {@link String#contains(CharSequence)}</li>
-     *     <li>{@link MatchType#STARTS_WITH}: {@link String#startsWith(String)}</li>
-     *     <li>{@link MatchType#ENDS_WITH}: {@link String#endsWith(String)}</li>
-     *     <li>{@link MatchType#MATCHES}: {@link String#matches(String)}</li>
-     * </ul>
-     *
-     * <p><b>Thread Safety</b></p>
-     * <p>Thread-safe.</p>
-     *
      * @return comparison mode
      */
-    MatchType matchType() default MatchType.EQUALS;
+    StringMatchType matchType() default StringMatchType.EQUALS;
 
     /**
      * Whether to consider missing properties as matching.
@@ -209,12 +198,4 @@ public @interface ConditionalOnStringProperty {
      * @return {@code true} to match when a property is missing
      */
     boolean matchIfMissing() default false;
-
-    enum MatchType {
-        EQUALS,
-        CONTAINS,
-        STARTS_WITH,
-        ENDS_WITH,
-        MATCHES
-    }
 }

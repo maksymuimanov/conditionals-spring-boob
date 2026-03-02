@@ -1,5 +1,6 @@
 package io.conditionals.condition;
 
+import io.conditionals.condition.dto.CollectionMatchType;
 import io.conditionals.condition.impl.OnCollectionPropertyCondition;
 import org.springframework.context.annotation.Conditional;
 
@@ -23,15 +24,7 @@ public @interface ConditionalOnCollectionProperty {
 
     boolean not() default false;
 
-    MatchType matchType() default MatchType.EQUALS;
+    CollectionMatchType matchType() default CollectionMatchType.EQUALS;
 
     boolean matchIfMissing() default false;
-
-    enum MatchType {
-        EQUALS,
-        CONTAINS_ALL,
-        CONTAINS_SEQUENCE,
-        STARTS_WITH,
-        ENDS_WITH
-    }
 }

@@ -1,5 +1,6 @@
 package io.conditionals.condition;
 
+import io.conditionals.condition.dto.NumericMatchType;
 import io.conditionals.condition.impl.OnIntegerPropertyCondition;
 import org.springframework.context.annotation.Conditional;
 
@@ -130,21 +131,9 @@ public @interface ConditionalOnIntegerProperty {
     /**
      * Integer comparison mode.
      *
-     * <p><b>Semantics</b></p>
-     * <ul>
-     *     <li>{@link MatchType#EQUALS}: equality comparison</li>
-     *     <li>{@link MatchType#GREATER_THAN}: strict greater-than comparison</li>
-     *     <li>{@link MatchType#LESS_THAN}: strict less-than comparison</li>
-     *     <li>{@link MatchType#GREATER_THAN_OR_EQUAL}: inclusive greater-than comparison</li>
-     *     <li>{@link MatchType#LESS_THAN_OR_EQUAL}: inclusive less-than comparison</li>
-     * </ul>
-     *
-     * <p><b>Thread Safety</b></p>
-     * <p>Thread-safe.</p>
-     *
      * @return comparison mode
      */
-    MatchType matchType() default MatchType.EQUALS;
+    NumericMatchType matchType() default NumericMatchType.EQUALS;
 
     /**
      * Whether to consider missing properties as matching.
@@ -158,12 +147,4 @@ public @interface ConditionalOnIntegerProperty {
      * @return {@code true} to match when a property is missing
      */
     boolean matchIfMissing() default false;
-
-    enum MatchType {
-        EQUALS,
-        GREATER_THAN,
-        LESS_THAN,
-        GREATER_THAN_OR_EQUAL,
-        LESS_THAN_OR_EQUAL
-    }
 }

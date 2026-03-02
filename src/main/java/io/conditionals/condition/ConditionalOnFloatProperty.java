@@ -1,5 +1,6 @@
 package io.conditionals.condition;
 
+import io.conditionals.condition.dto.NumericMatchType;
 import io.conditionals.condition.impl.OnFloatPropertyCondition;
 import org.springframework.context.annotation.Conditional;
 
@@ -107,7 +108,7 @@ public @interface ConditionalOnFloatProperty {
      *
      * @return comparison mode
      */
-    MatchType matchType() default MatchType.EQUALS;
+    NumericMatchType matchType() default NumericMatchType.EQUALS;
 
     /**
      * Whether to consider missing properties as matching.
@@ -115,12 +116,4 @@ public @interface ConditionalOnFloatProperty {
      * @return {@code true} to match when a property is missing
      */
     boolean matchIfMissing() default false;
-
-    enum MatchType {
-        EQUALS,
-        GREATER_THAN,
-        LESS_THAN,
-        GREATER_THAN_OR_EQUAL,
-        LESS_THAN_OR_EQUAL
-    }
 }

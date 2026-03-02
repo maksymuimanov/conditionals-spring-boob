@@ -1,5 +1,6 @@
 package io.conditionals.condition;
 
+import io.conditionals.condition.dto.NumericMatchType;
 import io.conditionals.condition.impl.OnDurationPropertyCondition;
 import org.springframework.context.annotation.Conditional;
 
@@ -21,15 +22,7 @@ public @interface ConditionalOnDurationProperty {
 
     boolean not() default false;
 
-    MatchType matchType() default MatchType.EQUALS;
+    NumericMatchType matchType() default NumericMatchType.EQUALS;
 
     boolean matchIfMissing() default false;
-
-    enum MatchType {
-        EQUALS,
-        GREATER_THAN,
-        LESS_THAN,
-        GREATER_THAN_OR_EQUAL,
-        LESS_THAN_OR_EQUAL
-    }
 }
