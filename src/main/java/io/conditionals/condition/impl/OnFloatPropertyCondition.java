@@ -63,34 +63,7 @@ import java.lang.annotation.Annotation;
  * @see io.conditionals.condition.ConditionalOnFloatProperty
  * @see io.conditionals.condition.ConditionalOnFloatProperties
  */
-public class OnFloatPropertyCondition extends NumericPropertySpringBootCondition<Float> {
-    private static final float PRECISION = 0.00001F;
-
-    @Override
-    protected boolean checkEquals(Float property, Float candidate) {
-        return Math.abs(property - candidate) < PRECISION;
-    }
-
-    @Override
-    protected boolean checkGreaterThan(Float property, Float candidate) {
-        return property > candidate;
-    }
-
-    @Override
-    protected boolean checkLessThan(Float property, Float candidate) {
-        return property < candidate;
-    }
-
-    @Override
-    protected boolean checkGreaterThanOrEqual(Float property, Float candidate) {
-        return property >= candidate;
-    }
-
-    @Override
-    protected boolean checkLessThanOrEqual(Float property, Float candidate) {
-        return property <= candidate;
-    }
-
+public class OnFloatPropertyCondition extends ComparablePropertySpringBootCondition<Float, Float> {
     @Override
     protected Class<? extends Annotation> getAnnotationClass() {
         return ConditionalOnFloatProperty.class;

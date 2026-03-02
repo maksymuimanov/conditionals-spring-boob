@@ -71,32 +71,7 @@ import java.lang.annotation.Annotation;
  * @see io.conditionals.condition.ConditionalOnIntegerProperty
  * @see io.conditionals.condition.ConditionalOnIntegerProperties
  */
-public class OnIntegerPropertyCondition extends NumericPropertySpringBootCondition<Integer> {
-    @Override
-    protected boolean checkEquals(Integer property, Integer candidate) {
-        return property.equals(candidate);
-    }
-
-    @Override
-    protected boolean checkGreaterThan(Integer property, Integer candidate) {
-        return property > candidate;
-    }
-
-    @Override
-    protected boolean checkLessThan(Integer property, Integer candidate) {
-        return property < candidate;
-    }
-
-    @Override
-    protected boolean checkGreaterThanOrEqual(Integer property, Integer candidate) {
-        return property >= candidate;
-    }
-
-    @Override
-    protected boolean checkLessThanOrEqual(Integer property, Integer candidate) {
-        return property <= candidate;
-    }
-
+public class OnIntegerPropertyCondition extends ComparablePropertySpringBootCondition<Integer, Integer> {
     @Override
     protected Class<? extends Annotation> getAnnotationClass() {
         return ConditionalOnIntegerProperty.class;

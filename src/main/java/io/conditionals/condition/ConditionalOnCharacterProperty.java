@@ -1,6 +1,6 @@
 package io.conditionals.condition;
 
-import io.conditionals.condition.dto.NumericMatchType;
+import io.conditionals.condition.dto.ComparableMatchType;
 import io.conditionals.condition.impl.OnCharacterPropertyCondition;
 import org.springframework.context.annotation.Conditional;
 
@@ -22,7 +22,7 @@ public @interface ConditionalOnCharacterProperty {
 
     boolean not() default false;
 
-    NumericMatchType matchType() default NumericMatchType.EQUALS;
+    ComparableMatchType matchType() default ComparableMatchType.EQUALS;
 
     boolean matchIfMissing() default false;
 }

@@ -1,6 +1,6 @@
 package io.conditionals.condition;
 
-import io.conditionals.condition.dto.NumericMatchType;
+import io.conditionals.condition.dto.ComparableMatchType;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.context.annotation.Bean;
@@ -12,15 +12,15 @@ class OnFloatPropertyConditionTest {
     private final ApplicationContextRunner contextRunner = new ApplicationContextRunner();
 
     @Test
-    void floatPropertyCondition_shouldCreateBean_whenPropertyEqualsHavingValueWithinPrecision() {
-        this.contextRunner.withPropertyValues("app.ratio=1.000001")
+    void floatPropertyCondition_shouldCreateBean_whenPropertyEqualsHavingValue() {
+        this.contextRunner.withPropertyValues("app.ratio=1")
                 .withUserConfiguration(EqualsConfig.class)
                 .run(context -> assertThat(context)
                         .hasSingleBean(Float.class));
     }
 
     @Test
-    void floatPropertyCondition_shouldNotCreateBean_whenPropertyNotEqualsHavingValueOutsidePrecision() {
+    void floatPropertyCondition_shouldNotCreateBean_whenPropertyNotEqualsHavingValue() {
         this.contextRunner.withPropertyValues("app.ratio=1.1")
                 .withUserConfiguration(EqualsConfig.class)
                 .run(context -> assertThat(context)
@@ -70,7 +70,7 @@ class OnFloatPropertyConditionTest {
     @Configuration(proxyBeanMethods = false)
     static class GreaterThanConfig {
         @Bean
-        @ConditionalOnFloatProperty(name = "app.ratio", havingValue = 1.0F, matchType = NumericMatchType.GREATER_THAN)
+        @ConditionalOnFloatProperty(name = "app.ratio", havingValue = 1.0F, matchType = ComparableMatchType.GREATER_THAN)
         Float conditionalBean() {
             return 1.0F;
         }

@@ -1,6 +1,6 @@
 package io.conditionals.condition.dto;
 
-public enum NumericMatchType {
+public enum ComparableMatchType {
     EQUALS,
     GREATER_THAN,
     LESS_THAN,

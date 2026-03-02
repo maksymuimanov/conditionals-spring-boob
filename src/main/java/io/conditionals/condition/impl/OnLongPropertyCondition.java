@@ -71,32 +71,7 @@ import java.lang.annotation.Annotation;
  * @see ConditionalOnLongProperty
  * @see ConditionalOnLongProperties
  */
-public class OnLongPropertyCondition extends NumericPropertySpringBootCondition<Long> {
-    @Override
-    protected boolean checkEquals(Long property, Long candidate) {
-        return property.equals(candidate);
-    }
-
-    @Override
-    protected boolean checkGreaterThan(Long property, Long candidate) {
-        return property > candidate;
-    }
-
-    @Override
-    protected boolean checkLessThan(Long property, Long candidate) {
-        return property < candidate;
-    }
-
-    @Override
-    protected boolean checkGreaterThanOrEqual(Long property, Long candidate) {
-        return property >= candidate;
-    }
-
-    @Override
-    protected boolean checkLessThanOrEqual(Long property, Long candidate) {
-        return property <= candidate;
-    }
-
+public class OnLongPropertyCondition extends ComparablePropertySpringBootCondition<Long, Long> {
     @Override
     protected Class<? extends Annotation> getAnnotationClass() {
         return ConditionalOnLongProperty.class;
