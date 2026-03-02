@@ -5,68 +5,7 @@ import io.conditionals.condition.impl.OnStringPropertyCondition;
 import org.springframework.context.annotation.Conditional;
 
 import java.lang.annotation.*;
-/**
- * Declares a Spring Boot condition that matches based on the value of one or more string-valued properties.
- *
- * <p>
- * When placed on a {@code @Configuration} class or {@code @Bean} method, Spring Boot evaluates the associated
- * {@link io.conditionals.condition.impl.OnStringPropertyCondition} during the condition evaluation phase of
- * configuration processing.
- * </p>
- *
- * <p><b>Semantics</b></p>
- * <ul>
- *     <li><b>Binding</b>: this annotation is meta-annotated with {@link Conditional} and is backed by
- *     {@link io.conditionals.condition.impl.OnStringPropertyCondition}.</li>
- *     <li><b>Repeatable evaluation</b>: when multiple instances are declared (via Java repeatable annotations or the
- *     {@link ConditionalOnStringProperties} container), Spring Boot evaluates each instance and aggregates with AND
- *     semantics: the annotated element matches only if all instances match.</li>
- *     <li><b>Name resolution</b>: property keys are composed as {@code prefix + name}. If {@code prefix} is non-empty
- *     and does not end with {@code '.'}, a dot is appended before composition.</li>
- *     <li><b>Property name selection</b>: {@link #value()} and {@link #name()} are mutually exclusive; exactly one must
- *     be non-empty.</li>
- *     <li><b>Evaluation order</b>: within an annotation instance, property names are evaluated in the declared array
- *     order. For repeatable declarations, annotation instances are evaluated in encounter order.</li>
- *     <li><b>Normalization</b>: if {@link #ignoreCase()} is {@code true}, property and candidate values are
- *     lower-cased using {@link java.util.Locale#ROOT}. If {@link #trim()} is {@code true}, values are trimmed
- *     after case normalization.</li>
- *     <li><b>Matching</b>: the normalized property value is compared to {@link #havingValue()} using
- *     {@link #matchType()}.</li>
- *     <li><b>Negation</b>: when {@link #not()} is {@code true}, the match result is logically inverted.</li>
- *     <li><b>Missing behavior</b>: missing properties produce a no-match outcome unless {@link #matchIfMissing()} is
- *     {@code true}.</li>
- * </ul>
- *
- * <p><b>Thread Safety</b></p>
- * <p>This annotation is thread-safe. It declares immutable metadata.</p>
- *
- * <p><b>Null Handling</b></p>
- * <p>Annotation attributes are never {@code null}; resolved property values may be {@code null} and are treated as non-matching.</p>
- *
- * <p><b>Edge Cases</b></p>
- * <ul>
- *     <li>For {@link MatchType#MATCHES}, the candidate value is treated as a regular expression pattern and is
- *     evaluated via {@link String#matches(String)}; invalid patterns result in {@link java.util.regex.PatternSyntaxException}.</li>
- *     <li>Empty strings are valid candidates. If {@link #trim()} is enabled, whitespace-only property values become
- *     empty strings before comparison.</li>
- * </ul>
- *
- * <p><b>Performance Characteristics</b></p>
- * <p>Evaluation is linear in the number of configured property names and annotation instances.</p>
- *
- * <p><b>Usage Example</b></p>
- * <pre>{@code
- * @ConditionalOnStringProperty(prefix = "app", name = "mode", havingValue = "prod")
- * @Configuration
- * class ProdConfiguration {
- * }
- * }</pre>
- *
- * @author Maksym Uimanov
- * @since 1.0
- * @see io.conditionals.condition.impl.OnStringPropertyCondition
- * @see ConditionalOnStringProperties
- */
+
 @Target({ ElementType.TYPE, ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
